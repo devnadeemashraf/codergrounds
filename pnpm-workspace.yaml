@@ -1,0 +1,5 @@
+packages:
+  # everything inside 'apps/'
+  - 'apps/*'
+  # everything inside 'packages/'
+  - 'packages/*'

@@ -1,0 +1,11 @@
+{
+  "name": "@codergrounds/frontend",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "scripts": {},
+  "packageManager": "pnpm@10.23.0",
+  "dependencies": {
+    "@codergrounds/shared": "workspace:*"
+  }
+}

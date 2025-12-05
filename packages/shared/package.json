@@ -1,0 +1,8 @@
+{
+  "name": "@codergrounds/shared",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "scripts": {},
+  "packageManager": "pnpm@10.23.0"
+}
