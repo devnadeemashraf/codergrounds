@@ -1,18 +1,13 @@
 import { Pool } from 'pg';
 
-import { envConfig } from '@/config';
+import { getPoolConfig } from '@/config';
 import { logger } from '@/shared/logger';
 
-export const connectionPool = new Pool({
-  host: envConfig.POSTGRES_HOST,
-  port: envConfig.POSTGRES_PORT,
-  user: envConfig.POSTGRES_USER,
-  password: envConfig.POSTGRES_PASSWORD,
-  database: envConfig.POSTGRES_DB,
-  ssl: false, // TODO: Configure based on NODE_ENV for production
-  min: 2,
-  max: 10,
-});
+export const initializeConnectionPool = (): Pool => {
+  return new Pool(getPoolConfig());
+};
+
+export const connectionPool = initializeConnectionPool();
 
 export const connectDatabase = async () => {
   try {
