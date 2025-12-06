@@ -1,12 +1,13 @@
 {
   "name": "codergrounds",
   "version": "1.0.0",
-  "description": "",
+  "description": "Codergrounds is a real-time collaborative coding playground featuring a live Monaco editor, peer programming capabilities, and a self-hosted code execution pipeline. Built with a modern feature-first monorepo architecture using React, Express, Socket.io, PostgreSQL, and Docker.",
   "private": true,
   "scripts": {
     "dev": "pnpm -r run dev",
     "build": "pnpm -r run build",
     "lint": "pnpm -r run lint",
+    "lint:fix": "pnpm -r run lint:fix",
     "test": "pnpm -r run test",
     "test:coverage": "pnpm -r run test:coverage"
   },
@@ -25,15 +26,22 @@
     "@types/node": "^24.10.1",
     "@typescript-eslint/eslint-plugin": "^8.48.1",
     "@typescript-eslint/parser": "^8.48.1",
+    "@vitejs/plugin-react": "^5.1.1",
     "@vitest/coverage-v8": "^4.0.15",
     "@vitest/ui": "^4.0.15",
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import-x": "^4.16.1",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
     "prettier": "^3.7.4",
+    "tsc-alias": "^1.8.16",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.48.1",
+    "vite": "^7.2.6",
+    "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^4.0.15"
   }
 }

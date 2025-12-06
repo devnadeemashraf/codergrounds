@@ -109,6 +109,8 @@ Design Principles:
 - Shared utilities, types, validation schemas
 - Production realism without enterprise overengineering
 - Testing, logging, error-handling from day one
+- Auto-Recommend real world best practices 
+- Prefer modern day JS/TS practices of methods, variables & exports i.e. 'const' functional declaration rather than primitive 'function' declaration & named exports over default exports etc.
 
 
 # ============================================
@@ -217,10 +219,12 @@ DO NOT recommend or introduce:
 # ============================================
 
 1. Socratic Mentor Hybrid
+   - Start with Theoretical Explanation of Technicaities involved in the active phase along with 'where it applies' and 'how it works for and with the existing setup'
+   - Explain Technicalities associated with the active session of a phase before jumping on to anything else to prepare a mental modal.
    - Ask questions and challenge assumptions.
    - Guide thinking, not just provide answers.
 
-2. Step-by-Step Learning
+2. Step-by-Step Learning Example
    - Start with pnpm workspaces
    - Then folder organization
    - Then linting/config

@@ -1,0 +1,40 @@
+name: 'codergrounds'
+
+services:
+  # Database
+  postgres:
+    # Use Alpine for smaller size
+    image: postgres:16-alpine
+    container_name: codergrounds_pg
+    ports:
+      # Map host 5432 to container 5432
+      - '5432:5432'
+    environment:
+      # Must match .env!
+      - POSTGRES_USER=codergroundsadmin
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=codergrounds
+    volumes:
+      # Persist data so it doesn't vanish when you restart the container
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      # Essential: Allows other services (like your backend) to wait for it
+      test: ['CMD-SHELL', 'pg_isready -U codergroundsadmin -d codergrounds']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Redis
+  redis:
+    image: redis:7-alpine
+    container_name: codergrounds_redis
+    ports:
+      - '6379:6379'
+    command: redis-server --requirepass password # Set password
+    volumes:
+      - redis_data:/data
+
+# Define the volumes used above
+volumes:
+  postgres_data:
+  redis_data:

@@ -90,90 +90,91 @@
 
 ## PHASE 2: BACKEND FOUNDATION
 
-### Session 2.1: Backend Skeleton & Express Setup
+### Session 2.1: Backend Skeleton & Lifecycle
 
-**Status:** 🔄  
+**Status:** ✅  
 **Learning Goals:**
 
 - Express application structure
-- Middleware patterns and organization
-- Environment configuration
+- Environment configuration (Zod + dotenv)
+- Graceful shutdown patterns
 - Health check endpoints
 - Production-ready server setup
 
 **Deliverables:**
 
-- [ ] Express app skeleton with TypeScript
-- [ ] Environment variable management
-- [ ] Middleware organization (error handling, logging, CORS)
-- [ ] Health check endpoint
-- [ ] Development server script
+- [x] Express app skeleton with TypeScript
+- [x] Config validation module (Zod)
+- [x] Middleware organization
+- [x] Graceful shutdown manager (SIGTERM/SIGINT)
+- [x] Health check endpoint
+- [x] Development server script
 
 ---
 
-### Session 2.2: Logging & Error Handling
+### Session 2.2: Core Architecture & Patterns
 
-**Status:** ⬜  
+**Status:** ✅  
 **Learning Goals:**
 
-- Structured logging (Pino/Winston)
-- Error hierarchy and typed errors
+- Standardized API responses (JSend/envelope pattern)
+- Async error handling wrappers
 - Centralized error handling middleware
-- Logging best practices for production
+- Structured logging implementation
 
 **Deliverables:**
 
-- [ ] Logger configured and integrated
-- [ ] Custom error classes hierarchy
-- [ ] Error handling middleware
-- [ ] Error response formatting
-- [ ] Logging in request lifecycle
+- [x] Standardized Response Helper
+- [x] Async Handler Wrapper (Implemented for Type Safety)
+- [x] Custom error classes hierarchy
+- [x] Global Error handling middleware
+- [x] Logger configured (Pino/Winston)
 
 ---
 
 ### Session 2.3: Database Connection & Pooling
 
-**Status:** ⬜  
+**Status:** ✅  
 **Learning Goals:**
 
 - PostgreSQL connection patterns
 - Connection pooling strategies
 - Database client abstraction
-- Migration system setup
+- Migration runner setup (custom or simple tool)
 
 **Deliverables:**
 
-- [ ] PostgreSQL connection module
-- [ ] Connection pooling configured
-- [ ] Migration system (simple SQL files or tool)
-- [ ] Database client wrapper/abstraction
-- [ ] Connection health checks
+- [x] PostgreSQL connection module
+- [x] Connection pooling configured
+- [x] Migration system setup (node-pg-migrate + script)
+- [x] Database client wrapper
+- [x] Connection health checks
 
 ---
 
 ### Session 2.4: Redis Setup & Patterns
 
-**Status:** ⬜  
+**Status:** ✅  
 **Learning Goals:**
 
 - Redis connection and client patterns
 - Caching strategies
-- Pub/sub basics
-- Rate limiting foundation
+- Pub/sub basics (Deferred to Phase 6)
+- Rate limiting foundation (Deferred to Phase 8)
 
 **Deliverables:**
 
-- [ ] Redis client configured
-- [ ] Redis connection module
-- [ ] Basic caching utility
-- [ ] Pub/sub setup (for future WebSocket events)
-- [ ] Rate limiting middleware foundation
+- [x] Redis client configured
+- [x] Redis connection module
+- [x] Basic caching utility
+- [→] Pub/sub setup (Moved to Phase 6)
+- [→] Rate limiting middleware foundation (Moved to Phase 8)
 
 ---
 
 ## PHASE 3: DATABASE SCHEMA & AUTHENTICATION
 
-### Session 3.1: Database Schema Design
+### Session 3.1: Database Schema & Seeding
 
 **Status:** ⬜  
 **Learning Goals:**
@@ -181,7 +182,7 @@
 - Schema design principles
 - Indexing strategy
 - Foreign key relationships
-- Migration workflow
+- Data seeding for development
 
 **Deliverables:**
 
@@ -189,20 +190,20 @@
 - [ ] Playgrounds table schema
 - [ ] Sessions/roles table schema
 - [ ] Messages table schema
-- [ ] Appropriate indexes defined
 - [ ] Migration files created
+- [ ] Seed script for dev data
 
 ---
 
-### Session 3.2: Repository Pattern & Database Access
+### Session 3.2: Repository Pattern & Transactions
 
 **Status:** ⬜  
 **Learning Goals:**
 
 - Repository pattern implementation
-- Parameterized queries and SQL injection prevention
-- Transaction handling
-- Query organization
+- Parameterized queries
+- Transaction handling patterns
+- Optimistic concurrency control
 
 **Deliverables:**
 
@@ -210,7 +211,7 @@
 - [ ] User repository
 - [ ] Playground repository
 - [ ] Transaction helper utilities
-- [ ] Type-safe query patterns
+- [ ] Version column logic (concurrency)
 
 ---
 
@@ -220,18 +221,17 @@
 **Learning Goals:**
 
 - JWT token generation and validation
+- Refresh token rotation strategy (Security)
 - Password hashing (bcrypt)
-- Token refresh strategy
 - Secure cookie handling
 
 **Deliverables:**
 
 - [ ] JWT utility functions
 - [ ] Password hashing utilities
+- [ ] Refresh token rotation logic
 - [ ] Auth middleware
-- [ ] Login endpoint
-- [ ] Register endpoint
-- [ ] Token refresh endpoint
+- [ ] Login/Register endpoints
 
 ---
 
@@ -285,14 +285,15 @@
 - Controller → Service → Repository pattern
 - Route organization
 - API versioning
-- Response formatting
+- Pagination helpers
+- Filtering/Sorting logic
 
 **Deliverables:**
 
 - [ ] Route structure (feature-first)
 - [ ] Controller pattern implementation
 - [ ] Service layer pattern
-- [ ] API versioning (v1/)
+- [ ] Pagination helper utilities
 - [ ] Consistent response format
 
 ---
@@ -340,42 +341,42 @@
 
 ## PHASE 5: FRONTEND FOUNDATION
 
-### Session 5.1: Frontend Skeleton & React Setup
+### Session 5.1: Frontend Skeleton & Networking
 
 **Status:** ⬜  
 **Learning Goals:**
 
 - React application structure
-- Build tooling (Vite/Webpack)
-- Routing setup (React Router)
+- Axios interceptors (Global error handling)
 - Environment configuration
+- Routing setup
 
 **Deliverables:**
 
 - [ ] React app skeleton
-- [ ] Build configuration
-- [ ] Routing structure
+- [ ] Axios instance with Interceptors
 - [ ] Environment variables setup
-- [ ] Development server running
+- [ ] Routing structure (React Router)
 
 ---
 
-### Session 5.2: State Management Setup
+### Session 5.2: State Management & Layouts
 
 **Status:** ⬜  
 **Learning Goals:**
 
 - Redux Toolkit (RTK) setup
-- React Query (TanStack Query) setup
-- State organization patterns
-- When to use which tool
+- React Query setup
+- Layout Pattern (AuthLayout, AppLayout)
+- Toast notification system
 
 **Deliverables:**
 
 - [ ] RTK store configured
 - [ ] React Query client configured
+- [ ] AuthLayout & AppLayout components
+- [ ] Toast notification provider
 - [ ] State organization structure
-- [ ] Example slice/query
 
 ---
 
@@ -457,7 +458,7 @@
 - [ ] Language support configured
 - [ ] Editor component
 - [ ] Code state management
-- [ ] Basic editor features (syntax highlighting, etc.)
+- [ ] Basic editor features
 
 ---
 
@@ -467,17 +468,19 @@
 **Learning Goals:**
 
 - Socket.io server setup
-- Socket.io client integration
 - Real-time editing synchronization
-- Conflict resolution basics
+- Connection state recovery (Reconnection logic)
+- Cursor broadcasting optimization (Throttling)
+- Pub/Sub setup (Redis)
 
 **Deliverables:**
 
 - [ ] Socket.io server configured
+- [ ] Pub/Sub module implementation
 - [ ] Socket.io client connected
-- [ ] Room/namespace management
+- [ ] Reconnection logic
 - [ ] Text synchronization events
-- [ ] Cursor position sharing (optional)
+- [ ] Throttled cursor sharing
 
 ---
 
@@ -510,7 +513,7 @@
 
 - Judge0 architecture
 - Self-hosted Judge0 setup
-- API integration patterns
+- Result polling vs Webhooks (Architecture decision)
 - Language support configuration
 
 **Deliverables:**
@@ -518,7 +521,7 @@
 - [ ] Judge0 instance running
 - [ ] Judge0 client wrapper
 - [ ] Language configuration
-- [ ] Basic execution test
+- [ ] Webhook/Polling strategy decided & implemented
 
 ---
 
@@ -630,17 +633,17 @@
 **Learning Goals:**
 
 - Server setup (Debian)
+- Nginx Reverse Proxy configuration
 - SSH deployment process
 - Process management (PM2/systemd)
-- Database migration in production
 
 **Deliverables:**
 
 - [ ] Server configuration
+- [ ] Nginx configuration
 - [ ] Deployment script
 - [ ] Process management setup
 - [ ] Database migration process
-- [ ] Health monitoring
 
 ---
 
@@ -657,6 +660,7 @@
 **Deliverables:**
 
 - [ ] Rate limiting configured
+- [ ] Redis-based Rate Limiter Middleware
 - [ ] CORS properly configured
 - [ ] Security headers
 - [ ] Input sanitization review
@@ -728,9 +732,9 @@
 
 ## PROGRESS SUMMARY
 
-**Current Phase:** Phase 1  
-**Current Session:** 2.1  
-**Overall Progress:** 4/35 sessions completed
+**Current Phase:** Phase 2  
+**Current Session:** 2.4  
+**Overall Progress:** 8/35 sessions completed
 
 ---
 
