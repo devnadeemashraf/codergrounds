@@ -35,17 +35,19 @@
 **Status:** ✅  
 **Learning Goals:**
 
-- Feature-first architecture principles
+- Simplified Layered Architecture principles (see [`localDocs/ARCHITECTURE.md`](../localDocs/ARCHITECTURE.md))
 - Folder structure conventions for backend and frontend
 - Shared package organization
 - Separation of concerns at the workspace level
+- Dependency Injection setup (see [`localDocs/DI_SETUP_GUIDE.md`](../localDocs/DI_SETUP_GUIDE.md))
 
 **Deliverables:**
 
-- [x] Feature-first folder structure for backend
+- [x] Simplified Layered Architecture for backend (core/infrastructure/shared)
 - [x] Feature-first folder structure for frontend
 - [x] Shared package structure (schemas, types, constants)
 - [x] Clear boundaries between apps and packages
+- [x] Dependency Injection container setup with tsyringe
 
 ---
 
@@ -199,7 +201,7 @@
 
 ### Session 3.2: Repository Pattern & Transactions
 
-**Status:** ⬜  
+**Status:** ✅  
 **Learning Goals:**
 
 - Repository pattern implementation
@@ -209,11 +211,11 @@
 
 **Deliverables:**
 
-- [ ] Base repository pattern
-- [ ] User repository
-- [ ] Playground repository
-- [ ] Transaction helper utilities
-- [ ] Version column logic (concurrency)
+- [x] Base repository pattern
+- [x] User repository
+- [x] Playground repository
+- [x] Transaction helper utilities
+- [→] Version column logic (concurrency) - Deferred (WebSocket real-time editing handles conflicts at application level)
 
 ---
 
@@ -292,9 +294,9 @@
 
 **Deliverables:**
 
-- [ ] Route structure (feature-first)
-- [ ] Controller pattern implementation
-- [ ] Service layer pattern
+- [ ] Route structure (organized by feature with versioning)
+- [ ] Controller pattern implementation (thin controllers calling use cases)
+- [ ] Use case pattern (business logic in core/useCases)
 - [ ] Pagination helper utilities
 - [ ] Consistent response format
 
@@ -735,8 +737,8 @@
 ## PROGRESS SUMMARY
 
 **Current Phase:** Phase 3  
-**Current Session:** 3.1  
-**Overall Progress:** 9/35 sessions completed
+**Current Session:** 3.2  
+**Overall Progress:** 10/35 sessions completed
 
 ---
 

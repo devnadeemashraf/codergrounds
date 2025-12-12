@@ -3,11 +3,19 @@
   "compilerOptions": {
     "rootDir": ".",
     "outDir": "dist",
+
+    // enables legacy decorators
+    "experimentalDecorators": true,
+    // ensures metadata is emitted so decorators can access types
+    "emitDecoratorMetadata": true,
+    "useDefineForClassFields": false,
+
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@srcipts/*": ["./scripts/*"]
     }
   },
-  "include": ["src/**/*", "scripts/**/*"],
+  "include": ["src/**/*", "src/**/*.d.ts", "scripts/**/*"],
   "references": [{ "path": "../../packages/shared" }]
 }

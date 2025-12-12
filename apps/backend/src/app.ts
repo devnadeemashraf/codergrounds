@@ -1,26 +1,25 @@
+// Import container first to ensure all DI registrations execute
+import '@/container';
+
 import cors from 'cors';
 import express from 'express';
 
 import type { Express } from 'express';
 
-import { corsConfig, expressJsonConfig } from '@/config';
+import { corsConfig } from '@/config';
+import { errorHandlerMiddleware, notFoundMiddleware } from '@/infrastructure/http/middlewares';
 import { registerRoutes } from '@/routes';
-import { globalErrorHandler, notFoundHandler } from '@/shared/middlewares';
 
 export const createApp = (): Express => {
   const app = express();
 
-  // Middlewares
-  app.use(express.json(expressJsonConfig));
+  app.use(express.json());
   app.use(cors(corsConfig));
 
-  // Register Routes
   registerRoutes(app);
 
-  // Not Found Handler
-  app.use(notFoundHandler);
-  // Global Error Handler
-  app.use(globalErrorHandler);
+  app.use(notFoundMiddleware);
+  app.use(errorHandlerMiddleware);
 
   return app;
 };

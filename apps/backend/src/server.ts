@@ -1,33 +1,26 @@
 import { createApp } from '@/app';
-import { bootstrap } from '@/bootstrap';
 import { envConfig } from '@/config';
+import { withFatalErrorTraced } from '@/shared/hofs';
 import { logger } from '@/shared/logger';
-import { gracefulShutdown } from '@/shutdown';
+import { bootstrap, gracefulShutdown } from '@/shared/utils/server.utils';
 
-const run = async () => {
-  try {
-    // Server Bootstrap
-    await bootstrap();
-
-    // Create App
+const run = withFatalErrorTraced(
+  async () => {
     const app = createApp();
 
-    // Start Listening
+    await bootstrap();
+
     const server = app.listen(envConfig.PORT, () => {
       logger.info(`Server Listening on PORT - ${envConfig.PORT}`);
     });
-
-    // Utility Function
     const shutdown = (signal: string) => gracefulShutdown(server, signal);
 
-    // Listen for termination signals (e.g., Docker stop, Ctrl+C)
     process.on('SIGTERM', () => shutdown('SIGTERM'));
     process.on('SIGINT', () => shutdown('SIGINT'));
-  } catch (err) {
-    logger.fatal(err, 'Failed to start Server');
-    process.exit(1);
-  }
-};
+  },
+  'Failed to start the Server!',
+  1,
+);
 
 // Global Error Traps
 process.on('uncaughtException', (err) => {
@@ -40,5 +33,4 @@ process.on('unhandledRejection', (err) => {
   process.exit(1);
 });
 
-// Run Server
 run();

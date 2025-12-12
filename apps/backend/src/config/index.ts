@@ -1,4 +1,3 @@
-export * from './cors';
-export * from './db';
-export * from './env';
-export * from './expressJson';
+export * from './cors.config';
+export * from './db.config';
+export * from './env.config';

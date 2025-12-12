@@ -105,7 +105,9 @@ Core User Flows:
 Design Principles:
 - Raw React and Express (no heavy frameworks)
 - Strict TypeScript everywhere
-- Feature-first structure
+- Simplified Layered Architecture for backend (core/infrastructure/shared) - see localDocs/ARCHITECTURE.md
+- Feature-first structure for frontend
+- Dependency Injection with tsyringe for backend - see localDocs/DI_SETUP_GUIDE.md
 - Shared utilities, types, validation schemas
 - Production realism without enterprise overengineering
 - Testing, logging, error-handling from day one
@@ -154,10 +156,11 @@ EXECUTION PIPELINE:
 - Idempotent job design
 
 ENGINEERING PRACTICES:
+- Simplified Layered Architecture (see localDocs/ARCHITECTURE.md)
+- Dependency Injection with tsyringe (see localDocs/DI_SETUP_GUIDE.md)
 - Modular folder layout
 - Shared workspace packages
-- Optional simple dependency injection (tsyringe allowed)
-- API versioning
+- API versioning (/api/v1/*)
 - Typed errors and error hierarchy
 - Logging strategy
 - Rate limiting
@@ -173,7 +176,7 @@ OPEN SOURCE PRACTICES:
 
 
 # ============================================
-#   FOLDER STRUCTURE RULES (FEATURE-FIRST)
+#   FOLDER STRUCTURE RULES
 # ============================================
 
 FRONTEND (React):
@@ -182,9 +185,15 @@ FRONTEND (React):
 - Shared folder for components, hooks, utils, types, constants.
 
 BACKEND (Express):
-- Feature-first organization:
-  Each feature contains routes, controllers, services, validators, types, repository logic, tests.
-- Shared folder for middlewares, utilities, schemas, error handling, logging, config, and database logic.
+- Simplified Layered Architecture (see localDocs/ARCHITECTURE.md):
+  - core/ - Framework-agnostic business logic (use cases, interfaces)
+  - infrastructure/ - Framework-specific implementations (Express, database, cache)
+  - shared/ - Pure utilities (no business logic, no framework dependencies)
+- Dependency Injection with tsyringe (see localDocs/DI_SETUP_GUIDE.md):
+  - Interfaces define contracts in core/interfaces/
+  - Implementations live in infrastructure/
+  - Registration in container.ts
+  - Token-based resolution for flexibility and testability
 
 SHARED WORKSPACE PACKAGE:
 - A packages/shared workspace must exist for:

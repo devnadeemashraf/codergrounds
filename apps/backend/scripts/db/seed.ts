@@ -1,13 +1,13 @@
 import { PoolClient } from 'pg';
 
-import { userSeedConfig } from './seedConfigs';
-import { createUserSeedData } from './seedData';
-import { checkIfSeedDataExists, insertSeedData } from './seedUtils';
+import { userSeedConfig } from './seed.config';
+import { checkIfSeedDataExists, insertSeedData } from './seed.utils';
+import { createUserSeedData } from './seedData.factory';
 
-import { connectionPool } from '@/shared/db';
+import { connectionPool } from '@/infrastructure/database/postgres.connection';
 import { logger } from '@/shared/logger';
 
-const main = async () => {
+export const startSeeding = async () => {
   logger.info('Starting seed..');
   let client: PoolClient | null = null;
 
@@ -43,4 +43,7 @@ const main = async () => {
   }
 };
 
-main();
+// use '--run' flag to run this file directly from console
+if (process.argv.includes('--run')) {
+  startSeeding();
+}

@@ -69,6 +69,14 @@ export default defineConfig(
 			'import-x/no-default-export': 'off', // Allow defaults here
 		},
 	},
+	// Disable import sorting for container.ts (preserves commented import groups)
+	{
+		files: ['apps/backend/src/app.ts', 'apps/backend/src/container.ts'],
+		rules: {
+			'simple-import-sort/imports': 'off',
+			'simple-import-sort/exports': 'off',
+		},
+	},
 	// Prettier must be last to override everything else
 	prettier
 );
