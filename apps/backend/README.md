@@ -138,6 +138,7 @@ class LoginUseCase {
 - `pnpm build`: Compile TypeScript to `dist/`
 - `pnpm test`: Run unit and integration tests via Vitest
 - `pnpm lint`: Lint code with ESLint
+- `pnpm migrate:create <name>`: Create a new migration file (e.g., `pnpm migrate:create add-user-avatar`)
 - `pnpm migrate:up`: Run database migrations
 - `pnpm migrate:down`: Rollback database migrations
 - `pnpm seed`: Seed database with development data

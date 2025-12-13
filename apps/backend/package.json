@@ -12,6 +12,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "seed": "pnpm tsx scripts/db/seed.ts --run",
+    "migrate:create": "node-pg-migrate create --migrations-dir src/infrastructure/database/migrations",
     "migrate:up": "pnpm tsx scripts/db/migrate.ts --up",
     "migrate:down": "pnpm tsx scripts/db/migrate.ts --down"
   },

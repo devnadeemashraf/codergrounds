@@ -7,7 +7,7 @@ import { logger } from '@/shared/logger';
 const executeRunner = async (client: PoolClient, direction: 'up' | 'down' = 'up') => {
   await runner({
     dbClient: client,
-    dir: 'src/shared/db/migrations',
+    dir: 'src/infrastructure/database/migrations',
     direction,
     migrationsTable: 'codergrounds_migrations',
     count: Infinity,
