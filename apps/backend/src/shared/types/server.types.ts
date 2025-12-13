@@ -1,3 +1,5 @@
+import type { NextFunction, Request, Response } from 'express';
+
 export interface ServerError {
   message: string;
   field?: string;
@@ -15,3 +17,5 @@ export interface ServerResponse<T = unknown> {
   errors?: ServerError[];
   meta?: Partial<ServerMeta>;
 }
+
+export type ExpressMiddleware = (req: Request, res: Response, next: NextFunction) => Promise<void>;

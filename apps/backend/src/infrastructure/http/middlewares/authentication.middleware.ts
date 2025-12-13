@@ -1,3 +1,4 @@
+import type { ExpressMiddleware } from '@/shared/types/server.types';
 import type { NextFunction, Request, Response } from 'express';
 
 import { UnauthorizedError } from '@/shared/errors';
@@ -17,5 +18,5 @@ export const authenticationMiddleware = withErrorTraced(
     req.user = decoded;
     next();
   },
-  'Failed to authenticate incoming request',
-) as (req: Request, res: Response, next: NextFunction) => Promise<void>;
+  'Failed to authenticate request',
+) as ExpressMiddleware;
