@@ -9,6 +9,14 @@
 
 ---
 
+**Architectural References & Standards:**
+
+- **Backend Architecture:** Strictly follow [`localDocs/ARCHITECTURE.md`](../localDocs/ARCHITECTURE.md). Implement logic in `core/useCases` and implementation in `infrastructure/`.
+- **Dependency Injection:** All services/repositories must be registered in `container.ts`. See [`localDocs/DI_SETUP_GUIDE.md`](../localDocs/DI_SETUP_GUIDE.md).
+- **Shared Contracts:** All DTOs and Validation Schemas must reside in `packages/shared` to ensure end-to-end type safety.
+
+---
+
 ## PHASE 1: FOUNDATION & MONOREPO SETUP
 
 ### Session 1.1: Monorepo Architecture
@@ -264,42 +272,43 @@
 
 ### Session 4.1: Validation with Zod
 
-**Status:** ⬜  
+**Status:** ✅  
 **Learning Goals:**
 
-- Zod schema design
-- Shared validation schemas
-- Request validation middleware
-- Type inference from schemas
+- Zod schema design for runtime validation
+- Sharing schemas between frontend and backend (`packages/shared`)
+- Creating a generic Validation Middleware
+- Type inference from Zod schemas
 
 **Deliverables:**
 
-- [ ] Shared Zod schemas package
-- [ ] Validation middleware
-- [ ] User input schemas
-- [ ] Playground schemas
-- [ ] End-to-end type safety
+- [x] Create `packages/shared/src/schemas/` structure
+- [x] Implement `ValidateRequest` middleware in `infrastructure/http/middlewares/`
+- [x] Create User schemas (`CreateUserSchema`, `LoginSchema`) in Shared package
+- [x] Create Playground schemas (`CreatePlaygroundSchema`) in Shared package
+- [x] Export inferred Types from schemas in Shared package
+- [x] Integrate middleware into `routes.ts` or specific route files
+- [x] Verify end-to-end type safety (Frontend imports)
 
 ---
 
 ### Session 4.2: API Structure & Controllers
 
-**Status:** ⬜  
+**Status:** ✅  
 **Learning Goals:**
 
-- Controller → Service → Repository pattern
-- Route organization
-- API versioning
-- Pagination helpers
-- Filtering/Sorting logic
+- Implementing the "Controller → UseCase → Repository" flow
+- Registering dependencies in `container.ts` (DI)
+- Creating thin Controllers in `infrastructure/http/controllers`
+- Structuring Routes in `infrastructure/http/routes`
 
 **Deliverables:**
 
-- [ ] Route structure (organized by feature with versioning)
-- [ ] Controller pattern implementation (thin controllers calling use cases)
-- [ ] Use case pattern (business logic in core/useCases)
-- [ ] Pagination helper utilities
-- [ ] Consistent response format
+- [x] Create `PaginationUtils` in `shared/utils`
+- [x] Refactor `registerRoutes` in `routes.ts` to support versioning (`/api/v1`)
+- [x] Create `BaseController` (Optional - utilizing functional response helpers)
+- [x] Ensure `infrastructure/http/controllers` only handles HTTP (Request/Response)
+- [x] Ensure `core/useCases` contains all business logic
 
 ---
 
@@ -308,19 +317,23 @@
 **Status:** ⬜  
 **Learning Goals:**
 
-- CRUD operations for playgrounds
-- Access control logic
-- Public/private playground handling
-- Access code generation
+- Full CRUD implementation using Simplified Layered Architecture
+- Dependency Injection for multiple layers
 
 **Deliverables:**
 
-- [ ] Create playground endpoint
-- [ ] Get playground endpoint
-- [ ] Update playground endpoint
-- [ ] Delete playground endpoint
-- [ ] List playgrounds endpoint
-- [ ] Access code validation
+- [ ] Define `PlaygroundRepositoryInterface` in `core/interfaces/repositories/`
+- [ ] Implement `PlaygroundRepository` in `infrastructure/database/repositories/`
+- [ ] Register `PlaygroundRepository` in `container.ts`
+- [ ] Implement Use Cases in `core/useCases/playground/`:
+  - [ ] `CreatePlaygroundUseCase`
+  - [ ] `GetPlaygroundUseCase` (with validation)
+  - [ ] `UpdatePlaygroundUseCase`
+  - [ ] `DeletePlaygroundUseCase`
+  - [ ] `ListPlaygroundsUseCase` (Pagination/Filtering)
+- [ ] Create `PlaygroundController` in `infrastructure/http/controllers/`
+- [ ] Define routes in `infrastructure/http/routes/playground.routes.ts`
+- [ ] Add Unit Tests for Use Cases
 
 ---
 
@@ -331,16 +344,17 @@
 
 - Role-based access control (RBAC)
 - Permission checking middleware
-- Owner/editor/viewer roles
-- Authorization logic
+- Owner/editor/viewer roles strategy
+- Use Case level authorization
 
 **Deliverables:**
 
-- [ ] Permission middleware
-- [ ] Role checking utilities
-- [ ] Playground access validation
-- [ ] Role assignment logic
-- [ ] Protected endpoints secured
+- [ ] Implement `PermissionMiddleware` in `infrastructure/http/middlewares/`
+- [ ] Define `PlaygroundRole` enum in `packages/shared`
+- [ ] Implement `CheckPermissionUseCase` (Logic for who can do what)
+- [ ] Update `GetPlaygroundUseCase` to check permissions
+- [ ] Protect Critical Endpoints (Delete/Update)
+- [ ] Add integration tests for permission denial
 
 ---
 
@@ -350,19 +364,18 @@
 **Learning Goals:**
 
 - Storage abstraction patterns (Strategy/Adapter)
-- S3-compatible protocol understanding
-- MinIO for local development
+- S3-compatible protocol (MinIO/AWS)
 - Environment-based provider switching
-- Public URL generation strategies
+- DI for Storage Service
 
 **Deliverables:**
 
-- [ ] MinIO container in docker-compose.yml
-- [ ] Storage interface (`core/interfaces/storage/`)
-- [ ] S3-compatible adapter (works with MinIO, AWS S3, Supabase)
-- [ ] Storage configuration module
-- [ ] DI registration for storage service
-- [ ] Upload and public URL utility functions
+- [ ] Add MinIO service to `docker-compose.yml`
+- [ ] Define `StorageServiceInterface` in `core/interfaces/services/`
+- [ ] Implement `S3StorageService` in `infrastructure/externalServices/`
+- [ ] Register Storage Service in `container.ts`
+- [ ] Implement `UploadFileUseCase`
+- [ ] Create `GeneratePresignedUrlUseCase` (if using presigned URLs)
 
 ---
 
@@ -372,19 +385,17 @@
 **Learning Goals:**
 
 - Deterministic visual identity from hash
-- Symmetric pixel art generation algorithm
-- Image buffer creation with `sharp`
-- Integration of generation + storage services
+- Buffer manipulation with `sharp`
+- Integration of `GenerateAvatarUseCase`
 
 **Deliverables:**
 
-- [ ] Avatar generation utility (hash → 16×16 pixel art)
-- [ ] PNG buffer creation with sharp
-- [ ] GenerateAvatar use case
-- [ ] Avatar URL field in users table (migration)
-- [ ] Hook avatar generation into user registration
-- [ ] Upload custom avatar endpoint
-- [ ] Remove/regenerate avatar endpoint
+- [ ] Create `AvatarService` in `infrastructure/services/`
+- [ ] Implement `GenerateAvatarUseCase` (Hash -> Pixel Art -> Buffer)
+- [ ] Integrate with `StorageService` to save generated avatar
+- [ ] Update `RegisterUseCase` to auto-generate avatar on signup
+- [ ] Add `avatar_url` column to `users` table (Migration)
+- [ ] Create `UpdateAvatarController` endpoint
 
 ---
 
@@ -434,18 +445,18 @@
 **Status:** ⬜  
 **Learning Goals:**
 
-- API client abstraction
-- Type-safe API calls
-- Error handling in frontend
-- Shared types from backend
+- Type-safe API calls using Shared Schemas
+- Centralized Axios instance with Interceptors
+- Generating/Inferring types for frontend
 
 **Deliverables:**
 
-- [ ] API client utility
-- [ ] Type-safe fetch wrapper
-- [ ] Error handling utilities
-- [ ] Shared types integration
-- [ ] Authentication token handling
+- [ ] Configure `apiClient` in `src/lib/api.ts`
+- [ ] Implement Response Interceptor for global error handling
+- [ ] Implement Request Interceptor for auto-injecting JWT
+- [ ] Import shared types from `@codergrounds/shared`
+- [ ] Create `useApi` or similar hook wrappers
+- [ ] Verify types match backend DTOs
 
 ---
 
@@ -476,18 +487,17 @@
 **Status:** ⬜  
 **Learning Goals:**
 
-- Dashboard page
-- Playground creation form
-- Playground list/explore
-- Access control UI
+- Building Dashboard with Grid/List views
+- Integrating Playground CRUD APIs
+- Modal forms and validation
 
 **Deliverables:**
 
-- [ ] Dashboard page
-- [ ] Create playground form
-- [ ] Playground list component
-- [ ] Explore/public playgrounds page
-- [ ] Access code input UI
+- [ ] `Dashboard` page with layout
+- [ ] `CreatePlaygroundModal` with React Hook Form + Zod
+- [ ] `PlaygroundCard` component
+- [ ] Connect APIs (Create, List, Delete)
+- [ ] Implement empty states and loading skeletons
 
 ---
 
@@ -516,20 +526,23 @@
 **Status:** ⬜  
 **Learning Goals:**
 
-- Socket.io server setup
-- Real-time editing synchronization
-- Connection state recovery (Reconnection logic)
-- Cursor broadcasting optimization (Throttling)
-- Pub/Sub setup (Redis)
+- Socket.io Server Architecture (`infrastructure/realtime`)
+- Authentication via WS Handshake
+- Namespaces & Rooms Strategy
+- Redis Adapter for Horizontal Scaling
+- Client-side Socket Context
 
 **Deliverables:**
 
-- [ ] Socket.io server configured
-- [ ] Pub/Sub module implementation
-- [ ] Socket.io client connected
-- [ ] Reconnection logic
-- [ ] Text synchronization events
-- [ ] Throttled cursor sharing
+- [ ] Create `infrastructure/realtime/socket.server.ts`
+- [ ] Implement `SocketAuthMiddleware` (JWT validation in handshake) in `infrastructure/realtime/middlewares/`
+- [ ] Define `CollaborationEvents` enum in `packages/shared`
+- [ ] Create `PlaygroundNamespace` in `infrastructure/realtime/namespaces/`
+- [ ] Implement Room joining/leaving logic (Room ID = Playground ID)
+- [ ] Configure `RedisAdapter` for Socket.io
+- [ ] Initialize Socket Server in `server.ts`
+- [ ] Frontend: Create `SocketProvider` context
+- [ ] Validating connectivity (Connect/Disconnect events)
 
 ---
 
@@ -599,18 +612,18 @@
 **Status:** ⬜  
 **Learning Goals:**
 
-- Execution request handling
-- Worker job processing
-- Result storage
-- Error handling in execution
+- Integrating Job Queue with API
+- Worker processing logic
+- Updating execution status via WebSockets/Polling
 
 **Deliverables:**
 
-- [ ] Execution API endpoint
-- [ ] Worker job handler
-- [ ] Result storage (Redis/DB)
-- [ ] Execution status tracking
-- [ ] Error handling
+- [ ] Implement `ExecuteCodeUseCase` (Producer: adds job to queue)
+- [ ] Implement `infrastructure/queue/worker.ts` (Consumer: processes jobs)
+- [ ] Create `ExecutionController` to trigger execution
+- [ ] Implement `SaveExecutionResultUseCase` (called by worker)
+- [ ] Dispatch "ExecutionFinished" Socket event (optional) or update DB status
+- [ ] Error handling for timeouts and Judge0 failures
 
 ---
 

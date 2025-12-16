@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ZodError, ZodTypeAny } from 'zod';
 
 import type { ExpressMiddleware } from '@/shared/types/server.types';
@@ -64,6 +65,12 @@ export const requestValidationMiddleware = (config: RequestValidationConfig) => 
         const fields = transformZodErrors(result.error);
         throw new ValidationError(validationErrorMessages[key], fields);
       }
+
+      // Assign validated data back to request to ensure type safety and strip unknown keys
+      if (key === 'body') req.body = result.data;
+      if (key === 'query') req.query = result.data as any;
+      if (key === 'params') req.params = result.data as any;
+      if (key === 'headers') Object.assign(req.headers, result.data);
     }
 
     next();
