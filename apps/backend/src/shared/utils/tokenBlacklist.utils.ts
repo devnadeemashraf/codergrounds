@@ -6,9 +6,9 @@ const redisRepo = new RedisRepository();
 
 export const blacklistRefreshToken = withErrorTraced(
   async (token: string, expiresInSeconds: number): Promise<void> => {
-    await redisRepo.setex(CacheKeys.blacklistedRefreshToken(token), expiresInSeconds, '1');
+    await redisRepo.set(CacheKeys.blacklistedRefreshToken(token), '1', expiresInSeconds);
   },
-  'Failed to "blacklistRefreshToken"',
+  'Failed to blacklist refresh token',
 );
 
 export const isRefreshTokenBlacklisted = withErrorTraced(
@@ -16,5 +16,5 @@ export const isRefreshTokenBlacklisted = withErrorTraced(
     const result = await redisRepo.get(CacheKeys.blacklistedRefreshToken(token));
     return result !== null;
   },
-  'Failed to check if "isRefreshTokenBlacklisted"',
+  'Failed to check if refresh token is blacklisted',
 );

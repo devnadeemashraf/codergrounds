@@ -1,9 +1,17 @@
 import { Router } from 'express';
 
-import { loginSchema, registerSchema } from '@codergrounds/shared';
+import {
+  changePasswordSchema,
+  loginSchema,
+  refreshTokenCookieSchema,
+  registerSchema,
+} from '@codergrounds/shared';
 
 import { AuthController } from '@/infrastructure/http/controllers/auth.controller';
-import { requestValidationMiddleware } from '@/infrastructure/http/middlewares';
+import {
+  authenticationMiddleware,
+  requestValidationMiddleware,
+} from '@/infrastructure/http/middlewares';
 
 export const createAuthRoutes = (authController: AuthController): Router => {
   const router = Router();
@@ -11,20 +19,35 @@ export const createAuthRoutes = (authController: AuthController): Router => {
   router.post(
     '/login',
     requestValidationMiddleware({
-      bodySchema: loginSchema,
+      body: loginSchema,
     }),
     authController.login,
   );
   router.post(
     '/register',
     requestValidationMiddleware({
-      bodySchema: registerSchema,
+      body: registerSchema,
     }),
     authController.register,
   );
 
-  // TODO: Add refresh token route when RefreshTokenUseCase is implemented
-  // router.post('/refresh', authController.refreshToken);
+  router.post(
+    '/refresh',
+    requestValidationMiddleware({
+      cookies: refreshTokenCookieSchema,
+    }),
+    authController.refreshToken,
+  );
+
+  // Set New Password (when forgot password or want to set after sigin in with OAuth provider)
+  router.post(
+    '/change_password',
+    requestValidationMiddleware({
+      body: changePasswordSchema,
+    }),
+    authenticationMiddleware,
+    authController.refreshToken,
+  );
 
   return router;
 };

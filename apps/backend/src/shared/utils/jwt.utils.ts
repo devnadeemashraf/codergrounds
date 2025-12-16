@@ -4,9 +4,7 @@ import { StringValue } from 'ms';
 import type { SignOptions } from 'jsonwebtoken';
 
 import { envConfig } from '@/config';
-import { TokenPayload } from '@/shared/types/jwt.types';
-
-type UserPayloadInTokenPayload = Pick<TokenPayload, 'userId' | 'username' | 'userEmail'>;
+import { TokenPayload, UserPayloadInTokenPayload } from '@/shared/types/jwt.types';
 
 export const generateAccessToken = (payload: UserPayloadInTokenPayload): string => {
   const options: SignOptions = {
@@ -22,7 +20,7 @@ export const generateRefreshToken = (payload: UserPayloadInTokenPayload): string
   return jwt.sign(payload, envConfig.JWT_REFRESH_TOKEN_SECRET, options);
 };
 
-export const generateTokenPair = (
+export const generateTokenPairs = (
   payload: UserPayloadInTokenPayload,
 ): {
   accessToken: string;

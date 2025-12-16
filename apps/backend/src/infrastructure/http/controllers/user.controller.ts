@@ -7,6 +7,10 @@ import { OK } from '@/shared/utils/response.utils';
 
 @injectable()
 export class UserController {
+  constructor() {
+    this.getMe = this.getMe.bind(this);
+  }
+
   @ErrorTraced('Failed to get user profile')
   async getMe(_req: Request, res: Response, _next: NextFunction) {
     // TODO: Implement when GetUserUseCase is created

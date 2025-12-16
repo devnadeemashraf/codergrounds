@@ -12,9 +12,7 @@ export const errorHandlerMiddleware = (
   _next: NextFunction,
 ) => {
   if (err instanceof BaseError) {
-    return res
-      .status(err.statusCode)
-      .json({ success: false, message: err.message, errors: err.serializeErrors() });
+    return res.status(err.statusCode).json({ success: false, errors: err.serializeErrors() });
   }
 
   // Encountered an unrecognized error, log it to console for debugging

@@ -221,7 +221,7 @@
 
 ### Session 3.3: Authentication System (JWT)
 
-**Status:** ⬜  
+**Status:** ✅  
 **Learning Goals:**
 
 - JWT token generation and validation
@@ -231,31 +231,32 @@
 
 **Deliverables:**
 
-- [ ] JWT utility functions
-- [ ] Password hashing utilities
-- [ ] Refresh token rotation logic
-- [ ] Auth middleware
-- [ ] Login/Register endpoints
+- [x] JWT utility functions
+- [x] Password hashing utilities
+- [x] Refresh token rotation logic
+- [x] Auth middleware
+- [x] Login/Register endpoints
 
 ---
 
 ### Session 3.4: OAuth Integration
 
-**Status:** ⬜  
+**Status:** ✅  
 **Learning Goals:**
 
 - OAuth 2.0 flow understanding
+- Understanding Flexible OAuth Integration Setup Architecture
 - OAuth provider integration (GitHub/Google)
 - State management for OAuth
 - User account linking
 
 **Deliverables:**
 
-- [ ] OAuth provider configuration
-- [ ] OAuth callback handler
-- [ ] State validation
-- [ ] Account linking logic
-- [ ] OAuth login endpoint
+- [x] OAuth provider configuration
+- [x] OAuth callback handler
+- [x] State validation
+- [x] Account linking logic
+- [x] OAuth login endpoint
 
 ---
 
@@ -340,6 +341,50 @@
 - [ ] Playground access validation
 - [ ] Role assignment logic
 - [ ] Protected endpoints secured
+
+---
+
+### Session 4.5: External Storage Integration
+
+**Status:** ⬜  
+**Learning Goals:**
+
+- Storage abstraction patterns (Strategy/Adapter)
+- S3-compatible protocol understanding
+- MinIO for local development
+- Environment-based provider switching
+- Public URL generation strategies
+
+**Deliverables:**
+
+- [ ] MinIO container in docker-compose.yml
+- [ ] Storage interface (`core/interfaces/storage/`)
+- [ ] S3-compatible adapter (works with MinIO, AWS S3, Supabase)
+- [ ] Storage configuration module
+- [ ] DI registration for storage service
+- [ ] Upload and public URL utility functions
+
+---
+
+### Session 4.6: Deterministic Avatar Generation
+
+**Status:** ⬜  
+**Learning Goals:**
+
+- Deterministic visual identity from hash
+- Symmetric pixel art generation algorithm
+- Image buffer creation with `sharp`
+- Integration of generation + storage services
+
+**Deliverables:**
+
+- [ ] Avatar generation utility (hash → 16×16 pixel art)
+- [ ] PNG buffer creation with sharp
+- [ ] GenerateAvatar use case
+- [ ] Avatar URL field in users table (migration)
+- [ ] Hook avatar generation into user registration
+- [ ] Upload custom avatar endpoint
+- [ ] Remove/regenerate avatar endpoint
 
 ---
 
@@ -737,8 +782,8 @@
 ## PROGRESS SUMMARY
 
 **Current Phase:** Phase 3  
-**Current Session:** 3.2  
-**Overall Progress:** 10/35 sessions completed
+**Current Session:** 3.3  
+**Overall Progress:** 11/37 sessions completed
 
 ---
 

@@ -34,6 +34,24 @@ const envSchema = z.object({
   JWT_REFRESH_TOKEN_EXPIRY: z.string().default('7d'),
   BCRYPT_SALT_ROUNDS: z.coerce.number().default(10),
 
+  // GitHub OAuth Credentials
+  // Optional
+  GITHUB_CLIENT_ID: z.string().min(1).optional(),
+  GITHUB_CLIENT_SECRET: z.string().min(1).optional(),
+  GITHUB_REDIRECT_URI: z
+    .string()
+    .min(1)
+    .default('http://localhost:3000/api/v1/auth/github/callback'),
+
+  // Google OAuth Credentials
+  // Optional
+  GOOGLE_CLIENT_ID: z.string().min(1).optional(),
+  GOOGLE_CLIENT_SECRET: z.string().min(1).optional(),
+  GOOGLE_REDIRECT_URI: z
+    .string()
+    .min(1)
+    .default('http://localhost:3000/api/v1/auth/google/callback'),
+
   // CORS
   CORS_ORIGIN: z.string().default('http://localhost:3000,http://localhost:5173'),
 });

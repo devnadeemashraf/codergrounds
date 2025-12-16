@@ -1,6 +1,6 @@
 import { inject, injectable } from 'tsyringe';
 
-import { LoginUserRequestBody } from '@codergrounds/shared';
+import type { LoginUserInput } from '@codergrounds/shared';
 
 import { UserRepositoryInterface } from '@/core/interfaces/repositories';
 import { UserMapper } from '@/infrastructure/mappers';
@@ -8,7 +8,7 @@ import { ErrorTraced } from '@/shared/decorators';
 import { ConflictError, UnauthorizedError } from '@/shared/errors';
 import { compareHashWithPlainText } from '@/shared/utils/bcrypt.utils';
 import { ContainerTokens } from '@/shared/utils/container.utils';
-import { generateTokenPair } from '@/shared/utils/jwt.utils';
+import { generateTokenPairs } from '@/shared/utils/jwt.utils';
 
 @injectable()
 export class LoginUseCase {
@@ -18,7 +18,7 @@ export class LoginUseCase {
   ) {}
 
   @ErrorTraced('Failed to login user')
-  async execute(input: LoginUserRequestBody) {
+  async execute(input: LoginUserInput) {
     const { identifier, password } = input;
 
     const existingUser = await this.userRepository.findUserByEmailOrUsername(
@@ -37,10 +37,11 @@ export class LoginUseCase {
       throw new UnauthorizedError('Invalid Credentials');
     }
 
-    const { accessToken, refreshToken } = generateTokenPair({
+    const { accessToken, refreshToken } = generateTokenPairs({
       userId: existingUser.id,
       username: existingUser.username,
       userEmail: existingUser.email,
+      tokenVersion: existingUser.token_version,
     });
 
     return {

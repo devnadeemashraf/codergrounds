@@ -1,4 +1,4 @@
-import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from './jwt.utils';
+import { generateTokenPairs, verifyRefreshToken } from './jwt.utils';
 import { blacklistRefreshToken, isRefreshTokenBlacklisted } from './tokenBlacklist.utils';
 
 import { withErrorTraced } from '@/shared/hofs';
@@ -36,21 +36,17 @@ export const rotateRefreshToken = withErrorTraced(
     await blacklistRefreshToken(oldRefreshToken, expiresInSeconds);
 
     // Generate new tokens
-    const newAccessToken = generateAccessToken({
+    const tokenPairs = generateTokenPairs({
       userId: decoded.userId,
       username: decoded.username,
       userEmail: decoded.userEmail,
-    });
-    const newRefreshToken = generateRefreshToken({
-      userId: decoded.userId,
-      username: decoded.username,
-      userEmail: decoded.userEmail,
+      tokenVersion: decoded.tokenVersion,
     });
 
     return {
-      accessToken: newAccessToken,
-      refreshToken: newRefreshToken,
+      accessToken: tokenPairs.accessToken,
+      refreshToken: tokenPairs.refreshToken,
     };
   },
-  'Failed to "rotateRefreshToken"',
+  'Failed to rotate refresh token',
 );

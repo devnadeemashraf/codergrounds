@@ -3,6 +3,7 @@ import '@/container';
 
 import cors from 'cors';
 import express from 'express';
+import cookieParser from 'cookie-parser';
 
 import type { Express } from 'express';
 
@@ -14,6 +15,7 @@ export const createApp = (): Express => {
   const app = express();
 
   app.use(express.json());
+  app.use(cookieParser());
   app.use(cors(corsConfig));
 
   registerRoutes(app);

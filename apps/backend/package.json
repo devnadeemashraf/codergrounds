@@ -12,14 +12,16 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "seed": "pnpm tsx scripts/db/seed.ts --run",
-    "migrate:create": "node-pg-migrate create --migrations-dir src/infrastructure/database/migrations",
+    "migrate:create": "node-pg-migrate create --migrations-dir src/infrastructure/database/migrations -j ts",
     "migrate:up": "pnpm tsx scripts/db/migrate.ts --up",
     "migrate:down": "pnpm tsx scripts/db/migrate.ts --down"
   },
   "packageManager": "pnpm@10.23.0",
   "dependencies": {
     "@codergrounds/shared": "workspace:*",
+    "axios": "^1.13.2",
     "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
@@ -35,7 +37,9 @@
     "zod": "^4.1.13"
   },
   "devDependencies": {
+    "@types/axios": "^0.14.4",
     "@types/bcrypt": "^6.0.0",
+    "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/ioredis": "^5.0.0",

@@ -1,14 +1,15 @@
 import { inject, injectable } from 'tsyringe';
 
-import { RegisterUserRequestBody } from '@codergrounds/shared';
+import type { RegisterUserInput } from '@codergrounds/shared';
 
 import { UserRepositoryInterface } from '@/core/interfaces/repositories';
 import { UserMapper } from '@/infrastructure/mappers';
 import { ErrorTraced } from '@/shared/decorators';
 import { ConflictError } from '@/shared/errors';
 import { hashPlainText } from '@/shared/utils/bcrypt.utils';
+import { getDefaultImageUrl } from '@/shared/utils/common.utils';
 import { ContainerTokens } from '@/shared/utils/container.utils';
-import { generateTokenPair } from '@/shared/utils/jwt.utils';
+import { generateTokenPairs } from '@/shared/utils/jwt.utils';
 
 @injectable()
 export class RegisterUseCase {
@@ -18,7 +19,7 @@ export class RegisterUseCase {
   ) {}
 
   @ErrorTraced('Failed to register user')
-  async execute(input: RegisterUserRequestBody) {
+  async execute(input: RegisterUserInput) {
     const { email, username, password } = input;
 
     const existingUser = await this.userRepository.findUserByEmailOrUsername(email, username);
@@ -33,15 +34,15 @@ export class RegisterUseCase {
       username,
       password_hash: passwordHash,
       provider: 'email',
-      provider_id: null,
       token_version: 1,
-      avatar_url: 'default://',
+      avatar_url: getDefaultImageUrl(username),
     });
 
-    const { accessToken, refreshToken } = generateTokenPair({
+    const { accessToken, refreshToken } = generateTokenPairs({
       userId: user.id,
       username: user.username,
       userEmail: user.email,
+      tokenVersion: user.token_version,
     });
 
     return {

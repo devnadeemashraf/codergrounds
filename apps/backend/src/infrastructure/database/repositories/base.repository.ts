@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Pool, PoolClient, QueryResult } from 'pg';
+import { Pool, PoolClient, QueryResult, QueryResultRow } from 'pg';
 
 import { BaseRepositoryInterface } from '@/core/interfaces/repositories/base.repository.interface';
 import { connectionPool } from '@/infrastructure/database/postgres.connection';
 import { ErrorTraced } from '@/shared/decorators';
+import { DatabaseQueryError } from '@/shared/errors';
 
 export abstract class BaseRepository<
   T extends Record<string, any>,
@@ -24,125 +25,164 @@ export abstract class BaseRepository<
     return connectionPool;
   }
 
-  @ErrorTraced("Failed to 'runQuery'")
-  async runQuery(sqlQuery: string, values: any[], client?: PoolClient): Promise<QueryResult<T>> {
-    const pgClient = this.getClient(client);
-    return await pgClient.query(sqlQuery, values);
-  }
-
-  @ErrorTraced("Failed to 'runQueryAndReturnFirstResult'")
-  async runQueryAndReturnFirstResult(
+  @ErrorTraced('Failed to run query')
+  async runQuery<R extends QueryResultRow = T>(
     sqlQuery: string,
     values: any[],
     client?: PoolClient,
-  ): Promise<T | null> {
-    const result = await this.runQuery(sqlQuery, values, client);
+  ): Promise<QueryResult<R>> {
+    const pgClient = this.getClient(client);
+    return await pgClient.query<R>(sqlQuery, values);
+  }
+
+  @ErrorTraced('Failed to run query and return first result or null')
+  async runQueryAndReturnFirstResult<R extends QueryResultRow = T>(
+    sqlQuery: string,
+    values: any[],
+    client?: PoolClient,
+  ): Promise<R | null> {
+    const result = await this.runQuery<R>(sqlQuery, values, client);
     return result.rows[0] || null;
   }
 
-  @ErrorTraced("Failed to 'runQueryAndReturnFirstResultRequired'")
-  async runQueryAndReturnFirstResultRequired(
+  @ErrorTraced('Failed to run query and return first result')
+  async runQueryAndReturnFirstResultRequired<R extends QueryResultRow = T>(
     sqlQuery: string,
     values: any[],
     client?: PoolClient,
-  ): Promise<T> {
-    const result = await this.runQuery(sqlQuery, values, client);
+  ): Promise<R> {
+    const result = await this.runQuery<R>(sqlQuery, values, client);
     if (!result.rows[0]) {
       throw new Error('Expected query result but none was returned');
     }
     return result.rows[0];
   }
 
-  @ErrorTraced("Failed to 'runQueryAndReturnAllResults'")
-  async runQueryAndReturnAllResults(
+  @ErrorTraced('Failed to run query and return all results or null')
+  async runQueryAndReturnAllResults<R extends QueryResultRow = T>(
     sqlQuery: string,
     values: any[],
     client?: PoolClient,
-  ): Promise<T[] | null> {
-    const result = await this.runQuery(sqlQuery, values, client);
+  ): Promise<R[] | null> {
+    const result = await this.runQuery<R>(sqlQuery, values, client);
     return result.rows || null;
   }
 
-  @ErrorTraced("Failed to 'findById'")
-  async findById(id: string, client?: PoolClient): Promise<T | null> {
-    const sqlQuery = `SELECT * FROM ${this.tableName} WHERE ${this.primaryKey} = $1`;
-    return this.runQueryAndReturnFirstResult(sqlQuery, [id], client);
+  @ErrorTraced('Failed to find by id')
+  async findById<R extends QueryResultRow = T>(id: string, client?: PoolClient): Promise<R | null> {
+    const sqlQuery = `
+      SELECT * 
+      FROM ${this.tableName} 
+      WHERE ${this.primaryKey} = $1
+    `;
+    return this.runQueryAndReturnFirstResult<R>(sqlQuery, [id], client);
   }
 
-  @ErrorTraced("Failed to 'findOne'")
-  async findOne(where: Partial<T>, client?: PoolClient): Promise<T | null> {
+  @ErrorTraced('Failed to find one')
+  async findOne<R extends QueryResultRow = T>(
+    where: Partial<R>,
+    client?: PoolClient,
+  ): Promise<R | null> {
     const keys = Object.keys(where);
     const values = Object.values(where);
 
     if (!keys.length) {
-      throw Error('No key found to fetch from database');
+      throw new DatabaseQueryError('No key found to fetch from database');
     }
 
     const conditions = keys.map((k, i) => `${k} = $${i + 1}`).join(' AND ');
-    const sqlQuery = `SELECT * FROM ${this.tableName} WHERE ${conditions} LIMIT 1`;
+    const sqlQuery = `
+      SELECT * 
+      FROM ${this.tableName} 
+      WHERE ${conditions} 
+      LIMIT 1
+    `;
 
-    return this.runQueryAndReturnFirstResult(sqlQuery, values, client);
+    return this.runQueryAndReturnFirstResult<R>(sqlQuery, values, client);
   }
 
-  @ErrorTraced("Failed to 'findMany'")
-  async findMany(where: Partial<T>, client?: PoolClient): Promise<T[] | null> {
+  @ErrorTraced('Failed to find many')
+  async findMany<R extends QueryResultRow = T>(
+    where: Partial<R>,
+    client?: PoolClient,
+  ): Promise<R[] | null> {
     const keys = Object.keys(where);
     const values = Object.values(where);
 
     if (!keys.length) {
-      throw Error('No key found to fetch from database');
+      throw new DatabaseQueryError('No key found to fetch from database');
     }
 
     const conditions = keys.map((k, i) => `${k} = $${i + 1}`).join(' AND ');
-    const sqlQuery = `SELECT * FROM ${this.tableName} WHERE ${conditions}`;
+    const sqlQuery = `
+      SELECT * 
+      FROM ${this.tableName} 
+      WHERE ${conditions}
+    `;
 
-    return this.runQueryAndReturnAllResults(sqlQuery, values, client);
+    return this.runQueryAndReturnAllResults<R>(sqlQuery, values, client);
   }
 
-  @ErrorTraced("Failed to 'create'")
-  async create(data: Partial<T>, client?: PoolClient): Promise<T> {
+  @ErrorTraced('Failed to create record')
+  async create<R extends QueryResultRow = T>(data: Partial<R>, client?: PoolClient): Promise<R> {
     const keys = Object.keys(data);
     const values = Object.values(data);
 
     if (!keys.length) {
-      throw Error('No key found to fetch from database');
+      throw new DatabaseQueryError('No key found to fetch from database');
     }
     if (!values.length) {
-      throw Error('No values found to update to the database');
+      throw new DatabaseQueryError('No values found to update to the database');
     }
 
     const columns = keys.join(', ');
     const placeholders = keys.map((_, i) => `$${i + 1}`).join(', ');
 
-    const sqlQuery = `INSERT INTO ${this.tableName} (${columns}) VALUES (${placeholders}) RETURNING *`;
+    const sqlQuery = `
+      INSERT INTO ${this.tableName} (${columns}) 
+      VALUES (${placeholders}) 
+      RETURNING *
+    `;
 
-    return this.runQueryAndReturnFirstResultRequired(sqlQuery, values, client);
+    return this.runQueryAndReturnFirstResultRequired<R>(sqlQuery, values, client);
   }
 
-  @ErrorTraced("Failed to 'update'")
-  async update(id: string, data: Partial<T>, client?: PoolClient): Promise<T | null> {
+  @ErrorTraced('Failed to update record')
+  async update<R extends QueryResultRow = T>(
+    id: string,
+    data: Partial<R>,
+    client?: PoolClient,
+  ): Promise<R | null> {
     const keys = Object.keys(data);
     const values = Object.values(data);
 
     if (!keys.length) {
-      throw Error('No key found to fetch from database');
+      throw new DatabaseQueryError('No key found to fetch from database');
     }
     if (!values.length) {
-      throw Error('No values found to update to the database');
+      throw new DatabaseQueryError('No values found to update to the database');
     }
 
     const setClause = keys.map((k, i) => `${k} = $${i + 1}`).join(', ');
 
-    const sqlQuery = `UPDATE ${this.tableName} SET ${setClause} WHERE ${this.primaryKey} = $${keys.length + 1} RETURNING *`;
+    const sqlQuery = `
+      UPDATE ${this.tableName} 
+      SET ${setClause} 
+      WHERE ${this.primaryKey} = $${keys.length + 1} 
+      RETURNING *
+    `;
 
-    return this.runQueryAndReturnFirstResult(sqlQuery, [...values, id], client);
+    return this.runQueryAndReturnFirstResult<R>(sqlQuery, [...values, id], client);
   }
 
-  @ErrorTraced("Failed to 'delete'")
-  async delete(id: string, client?: PoolClient): Promise<boolean> {
-    const sqlQuery = `DELETE FROM ${this.tableName} WHERE ${this.primaryKey} = $1`;
+  @ErrorTraced('Failed to delete record')
+  async delete<R extends QueryResultRow = T>(id: string, client?: PoolClient): Promise<boolean> {
+    const sqlQuery = `
+      DELETE FROM ${this.tableName} 
+      WHERE ${this.primaryKey} = $1
+    `;
 
-    const result = await this.runQuery(sqlQuery, [id], client);
+    const result = await this.runQuery<R>(sqlQuery, [id], client);
 
     if (!result || !result.rowCount) return false;
     return true;

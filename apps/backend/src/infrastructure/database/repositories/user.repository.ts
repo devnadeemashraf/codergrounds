@@ -11,7 +11,7 @@ export class UserRepository extends BaseRepository<User> implements UserReposito
     super('users');
   }
 
-  @ErrorTraced('Failed to "findUserByEmailOrUsername"')
+  @ErrorTraced('Failed to find user by email or username')
   async findUserByEmailOrUsername(
     email: string,
     username: string,

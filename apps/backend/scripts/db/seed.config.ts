@@ -30,7 +30,6 @@ export const userSeedConfig: SeedConfig<UserSeed> = {
         password_hash: user.password_hash,
         avatar_url: user.avatar_url,
         provider: user.provider,
-        provider_id: user.provider_id,
         token_version: user.token_version,
       },
       client,

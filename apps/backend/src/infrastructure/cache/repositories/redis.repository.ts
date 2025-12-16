@@ -16,15 +16,6 @@ export class RedisRepository implements CacheRepositoryInterface {
     await redis.set(key, serialized, 'EX', ttlSeconds);
   }
 
-  @ErrorTraced('RedisRepository "setex" failed')
-  async setex(
-    key: string,
-    ttlSeconds: number = 3600,
-    value: string | number | Buffer<ArrayBufferLike>,
-  ): Promise<void> {
-    await redis.setex(key, ttlSeconds, value);
-  }
-
   @ErrorTraced('RedisRepository "del" failed')
   async del(key: string): Promise<void> {
     await redis.del(key);

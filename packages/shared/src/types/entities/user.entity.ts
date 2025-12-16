@@ -1,6 +1,7 @@
 import { BaseEntity } from './base';
 
-export type UserAuthProviders = 'email' | 'github' | 'google';
+export type UserOAuthProviders = 'github' | 'google';
+export type UserAuthProviders = 'email' | UserOAuthProviders;
 
 export interface User extends BaseEntity {
   email: string;
@@ -8,8 +9,15 @@ export interface User extends BaseEntity {
   password_hash: string | null;
   avatar_url: string | null;
   provider: UserAuthProviders;
-  provider_id: string | null;
   token_version: number;
+}
+
+export interface UserOAuthProfile {
+  providerUserId: string;
+  email: string | null;
+  username: string | null;
+  avatarUrl: string | null;
+  provider: UserOAuthProviders;
 }
 
 // Seed Data Type (what you INSEERT, not what you SELECT)

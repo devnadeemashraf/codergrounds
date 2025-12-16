@@ -32,7 +32,38 @@ export const gracefulShutdown = withFatalErrorTraced(
 
     // Stop Accepting New Requests
     server.close(() => {
-      logger.info('HTTP Server Closed');
+      logger.info('HTTP Server Closed - No longer accepting new requests');
+    });
+
+    // Give in-flight requests up to 10 seconds to complete
+    const shutdownTimeout = 10000; // 10 seconds
+    const startTime = Date.now();
+
+    // Check if there are active connections
+    // Note: Express doesn't expose active request count directly
+    // So we use a timeout approach
+    await new Promise<void>((resolve) => {
+      const checkInterval = setInterval(() => {
+        const elapsed = Date.now() - startTime;
+
+        // If timeout reached, force shutdown
+        if (elapsed >= shutdownTimeout) {
+          clearInterval(checkInterval);
+          logger.warn('Shutdown timeout reached, forcing database disconnect');
+          resolve();
+          return;
+        }
+
+        // In a production app, you'd track active requests here
+        // For now, we'll use a short delay to let requests finish
+        // This is a simplified approach
+      }, 100);
+
+      // Give a grace period for requests to finish
+      setTimeout(() => {
+        clearInterval(checkInterval);
+        resolve();
+      }, 5000); // 5 second grace period
     });
 
     await disconnectDatabase();

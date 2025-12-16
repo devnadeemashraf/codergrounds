@@ -7,13 +7,16 @@
 export const ContainerTokens = {
   // Repositories
   userRepository: 'UserRepository',
+  userOAuthProvidersRepository: 'UserOAuthProvidersRepository',
   playgroundRepository: 'PlaygroundRepository',
   cacheRepository: 'CacheRepository',
 
   // Use Cases - Auth
   loginUseCase: 'LoginUseCase',
+  oauthLoginUseCase: 'OAuthLoginUseCase',
   registerUseCase: 'RegisterUseCase',
   refreshTokenUseCase: 'RefreshTokenUseCase',
+  changePasswordUseCase: 'ChangePasswordUseCase',
 
   // Use Cases - User
   getUserUseCase: 'GetUserUseCase',
@@ -28,6 +31,16 @@ export const ContainerTokens = {
 
   // Controllers
   authController: 'AuthController',
+  oauthController: 'OAuthController',
   userController: 'UserController',
   playgroundController: 'PlaygroundController',
+
+  // Servies
+  googleOAuthService: 'GoogleOAuthService',
+  githubOAuthService: 'GithubOAuthService',
+
+  // External Services
+
+  // Factories
+  oauthFactory: 'OAuthFactory',
 } as const;
