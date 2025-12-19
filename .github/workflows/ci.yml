@@ -75,8 +75,18 @@ jobs:
         run: |
           ssh ${{ secrets.VPS_HOST }} << 'ENDSSH'
             cd ~/projects/codergrounds
+            
+            # Pull latest code
             git pull origin main
+            
+            # Build TypeScript locally (creates dist/ folders)
+            # This is done OUTSIDE Docker to avoid workspace resolution issues
+            pnpm install --frozen-lockfile
+            pnpm turbo run build --filter=@codergrounds/backend...
+            
+            # Now build Docker image (it copies the pre-built dist folders)
             docker compose -f docker-compose.prod.yml up -d --build
+            
             # Wait for backend to be healthy before running migrations
             sleep 10
             docker compose -f docker-compose.prod.yml exec -T backend pnpm run db:migrate
