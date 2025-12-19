@@ -1,6 +1,6 @@
 import { inject, injectable } from 'tsyringe';
 
-import type { LoginUserInput } from '@codergrounds/shared';
+import type { LoginInput } from '@codergrounds/shared';
 
 import { UserRepositoryInterface } from '@/core/interfaces/repositories';
 import { UserMapper } from '@/infrastructure/mappers';
@@ -18,7 +18,7 @@ export class LoginUseCase {
   ) {}
 
   @ErrorTraced('Failed to login user')
-  async execute(input: LoginUserInput) {
+  async execute(input: LoginInput) {
     const { identifier, password } = input;
 
     const existingUser = await this.userRepository.findUserByEmailOrUsername(

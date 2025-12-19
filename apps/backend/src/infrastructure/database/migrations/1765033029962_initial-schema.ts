@@ -19,7 +19,7 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
       username: { type: 'varchar(50)', unique: true, notNull: true },
       password_hash: { type: 'varchar(255)', notNull: false },
       avatar_url: { type: 'varchar(255)', notNull: false },
-      provider: { type: 'varchar(20)', notNull: true, default: 'email' }, // Shows how did the user register initially
+      provider: { type: 'varchar(20)', notNull: true }, // Shows how did the user register initially
       provider_id: { type: 'varchar(255)', notNull: false },
       token_version: { type: 'integer', notNull: true, default: 1 },
       created_at: { type: 'timestamptz', default: pgm.func('now()'), notNull: true },
@@ -47,7 +47,7 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
       },
       name: { type: 'varchar(100)', notNull: true },
       description: { type: 'text', default: '' },
-      visibility: { type: 'varchar(20)', default: 'private' },
+      visibility: { type: 'varchar(20)', default: 'public' },
       access_code: { type: 'varchar(20)', default: null }, // Nullable
       created_at: { type: 'timestamptz', default: pgm.func('now()'), notNull: true },
       updated_at: { type: 'timestamptz', default: pgm.func('now()'), notNull: true },
@@ -152,6 +152,7 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
       content: { type: 'text', notNull: true },
       type: { type: 'varchar(20)', default: 'text' },
       created_at: { type: 'timestamptz', default: pgm.func('now()'), notNull: true },
+      updated_at: { type: 'timestamptz', default: pgm.func('now()'), notNull: true },
       deleted_at: { type: 'timestamptz', notNull: false },
     },
     { ifNotExists: true },

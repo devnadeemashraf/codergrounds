@@ -1,6 +1,6 @@
 import { PoolClient } from 'pg';
 
-import { User, UserOAuthProvider, UserOAuthProviders } from '@codergrounds/shared';
+import { User, UserOAuthProvider, UserProvider } from '@codergrounds/shared';
 
 import {
   UserOAuthProviderData,
@@ -47,7 +47,7 @@ export class UserOAuthProvidersRepository
 
   @ErrorTraced('Failed to find user by provider')
   async findUserByOAuthProvider(
-    provider: UserOAuthProviders,
+    provider: UserProvider,
     providerUserId: string,
     client?: PoolClient,
   ) {

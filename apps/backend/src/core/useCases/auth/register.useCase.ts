@@ -1,6 +1,6 @@
 import { inject, injectable } from 'tsyringe';
 
-import type { RegisterUserInput } from '@codergrounds/shared';
+import { type RegisterInput, UserProvider } from '@codergrounds/shared';
 
 import { UserRepositoryInterface } from '@/core/interfaces/repositories';
 import { UserMapper } from '@/infrastructure/mappers';
@@ -19,7 +19,7 @@ export class RegisterUseCase {
   ) {}
 
   @ErrorTraced('Failed to register user')
-  async execute(input: RegisterUserInput) {
+  async execute(input: RegisterInput) {
     const { email, username, password } = input;
 
     const existingUser = await this.userRepository.findUserByEmailOrUsername(email, username);
@@ -33,7 +33,7 @@ export class RegisterUseCase {
       email,
       username,
       password_hash: passwordHash,
-      provider: 'email',
+      provider: UserProvider.Email,
       token_version: 1,
       avatar_url: getDefaultImageUrl(username),
     });

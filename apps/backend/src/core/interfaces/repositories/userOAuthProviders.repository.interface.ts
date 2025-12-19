@@ -1,4 +1,4 @@
-import { User, UserOAuthProvider, UserOAuthProviders } from '@codergrounds/shared';
+import { User, UserOAuthProvider, UserProvider } from '@codergrounds/shared';
 
 import { BaseRepositoryInterface } from './base.repository.interface';
 
@@ -13,7 +13,7 @@ export interface UserOAuthProvidersRepositoryInterface<
   T = UserOAuthProvider,
 > extends BaseRepositoryInterface<T> {
   findUserByOAuthProvider(
-    provider: UserOAuthProviders,
+    provider: UserProvider,
     providerUserId: string,
     client?: PoolClient,
   ): Promise<User | null>;

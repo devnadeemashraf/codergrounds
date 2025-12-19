@@ -3,7 +3,7 @@ import { URL } from 'node:url';
 import axios from 'axios';
 import { injectable } from 'tsyringe';
 
-import { OAuthTokenResponse, UserOAuthProfile } from '@codergrounds/shared';
+import { OAuthTokenResponse, UserOAuthProfile, UserProvider } from '@codergrounds/shared';
 
 import { envConfig } from '@/config';
 import { OAuthServiceInterface } from '@/core/interfaces/services';
@@ -78,7 +78,7 @@ export class GithubOAuthService implements OAuthServiceInterface {
       email,
       username: response.data.login,
       avatarUrl: response.data.avatar_url,
-      provider: 'github',
+      provider: UserProvider.GitHub,
     };
   }
 }

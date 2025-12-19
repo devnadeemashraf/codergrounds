@@ -20,6 +20,9 @@ import { CacheRepositoryInterface } from '@/core/interfaces/cache/cache.interfac
 import {
   UserRepositoryInterface,
   UserOAuthProvidersRepositoryInterface,
+  PlaygroundRepositoryInterface,
+  FileRepositoryInterface,
+  ExecutionRepositoryInterface,
 } from '@/core/interfaces/repositories';
 
 // Use Cases
@@ -31,15 +34,37 @@ import {
   ChangePasswordUseCase,
 } from '@/core/useCases/auth';
 
+import {
+  CreatePlaygroundUseCase,
+  GetPlaygroundUseCase,
+  ListPlaygroundsUseCase,
+  UpdatePlaygroundUseCase,
+  DeletePlaygroundUseCase,
+} from '@/core/useCases/playground';
+
+import { CreateFileUseCase, UpdateFileUseCase, DeleteFileUseCase } from '@/core/useCases/file';
+
+import { ExecuteCodeUseCase } from '@/core/useCases/execution';
+
 // Infrastructure Implementations
 import { RedisRepository } from '@/infrastructure/cache/repositories/redis.repository';
 import {
   UserRepository,
   UserOAuthProvidersRepository,
+  PlaygroundRepository,
+  FileRepository,
+  ExecutionRepository,
 } from '@/infrastructure/database/repositories';
 
 // Controllers
-import { AuthController, OAuthController, UserController } from '@/infrastructure/http/controllers';
+import {
+  AuthController,
+  OAuthController,
+  UserController,
+  PlaygroundController,
+  FileController,
+  ExecutionController,
+} from '@/infrastructure/http/controllers';
 
 // Services
 import { GoogleOAuthService, GithubOAuthService } from '@/infrastructure/services/oauth';
@@ -53,8 +78,6 @@ import { ContainerTokens } from '@/shared/utils/container.utils';
 // ============================================
 // REPOSITORY REGISTRATIONS
 // ============================================
-// Register interface → implementation mappings
-// This allows us to inject interfaces (abstractions) instead of concrete classes
 
 container.register<UserRepositoryInterface>(ContainerTokens.userRepository, {
   useClass: UserRepository,
@@ -65,6 +88,16 @@ container.register<UserOAuthProvidersRepositoryInterface>(
     useClass: UserOAuthProvidersRepository,
   },
 );
+container.register<PlaygroundRepositoryInterface>(ContainerTokens.playgroundRepository, {
+  useClass: PlaygroundRepository,
+});
+container.register<FileRepositoryInterface>(ContainerTokens.fileRepository, {
+  useClass: FileRepository,
+});
+container.register<ExecutionRepositoryInterface>(ContainerTokens.executionRepository, {
+  useClass: ExecutionRepository,
+});
+
 container.register<CacheRepositoryInterface>(ContainerTokens.cacheRepository, {
   useClass: RedisRepository,
 });
@@ -72,9 +105,8 @@ container.register<CacheRepositoryInterface>(ContainerTokens.cacheRepository, {
 // ============================================
 // USE CASE REGISTRATIONS
 // ============================================
-// Use cases are registered as singletons (one instance per app lifecycle)
-// They depend on repositories which are injected via constructor
 
+// Auth
 container.registerSingleton<LoginUseCase>(ContainerTokens.loginUseCase, LoginUseCase);
 container.registerSingleton<OAuthLoginUseCase>(
   ContainerTokens.oauthLoginUseCase,
@@ -90,21 +122,68 @@ container.registerSingleton<ChangePasswordUseCase>(
   ChangePasswordUseCase,
 );
 
+// Playground
+container.registerSingleton<CreatePlaygroundUseCase>(
+  ContainerTokens.createPlaygroundUseCase,
+  CreatePlaygroundUseCase,
+);
+container.registerSingleton<GetPlaygroundUseCase>(
+  ContainerTokens.getPlaygroundUseCase,
+  GetPlaygroundUseCase,
+);
+container.registerSingleton<ListPlaygroundsUseCase>(
+  ContainerTokens.listPlaygroundsUseCase,
+  ListPlaygroundsUseCase,
+);
+container.registerSingleton<UpdatePlaygroundUseCase>(
+  ContainerTokens.updatePlaygroundUseCase,
+  UpdatePlaygroundUseCase,
+);
+container.registerSingleton<DeletePlaygroundUseCase>(
+  ContainerTokens.deletePlaygroundUseCase,
+  DeletePlaygroundUseCase,
+);
+
+// File
+container.registerSingleton<CreateFileUseCase>(
+  ContainerTokens.createFileUseCase,
+  CreateFileUseCase,
+);
+container.registerSingleton<UpdateFileUseCase>(
+  ContainerTokens.updateFileUseCase,
+  UpdateFileUseCase,
+);
+container.registerSingleton<DeleteFileUseCase>(
+  ContainerTokens.deleteFileUseCase,
+  DeleteFileUseCase,
+);
+
+// Execution
+container.registerSingleton<ExecuteCodeUseCase>(
+  ContainerTokens.executeCodeUseCase,
+  ExecuteCodeUseCase,
+);
+
 // ============================================
 // CONTROLLER REGISTRATIONS
 // ============================================
-// Controllers are registered as singletons
-// They depend on use cases which are injected via constructor
 
 container.registerSingleton<AuthController>(ContainerTokens.authController, AuthController);
 container.registerSingleton<OAuthController>(ContainerTokens.oauthController, OAuthController);
 container.registerSingleton<UserController>(ContainerTokens.userController, UserController);
+container.registerSingleton<PlaygroundController>(
+  ContainerTokens.playgroundController,
+  PlaygroundController,
+);
+container.registerSingleton<FileController>(ContainerTokens.fileController, FileController);
+container.registerSingleton<ExecutionController>(
+  ContainerTokens.executionController,
+  ExecutionController,
+);
 
 // ============================================
 // SERVICES REGISTRATIONS
 // ============================================
-// Services are registered as singletons
-// They depend on use cases which are injected via constructor
 container.registerSingleton<GoogleOAuthService>(
   ContainerTokens.googleOAuthService,
   GoogleOAuthService,
@@ -117,8 +196,6 @@ container.registerSingleton<GithubOAuthService>(
 // ============================================
 // FACTORY REGISTRATIONS
 // ============================================
-// Factories are registered as singletons
-// They depend on use cases which are injected via constructor
 container.registerSingleton<OAuthFactory>(ContainerTokens.oauthFactory, OAuthFactory);
 
 // Export the container for use in routes.ts and other places

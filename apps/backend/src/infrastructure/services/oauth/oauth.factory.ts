@@ -1,6 +1,6 @@
 import { inject, injectable } from 'tsyringe';
 
-import { UserOAuthProviders } from '@codergrounds/shared';
+import { UserProvider } from '@codergrounds/shared';
 
 import { GithubOAuthService } from './github.service';
 import { GoogleOAuthService } from './google.service';
@@ -18,7 +18,7 @@ export class OAuthFactory implements OAuthFactoryInterface {
     private readonly githubOAuthService: GithubOAuthService,
   ) {}
 
-  getService(provider: UserOAuthProviders): OAuthServiceInterface {
+  getService(provider: UserProvider): OAuthServiceInterface {
     switch (provider) {
       case 'google': {
         return this.googleOAuthService;

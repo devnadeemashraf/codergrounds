@@ -9,6 +9,8 @@ export const ContainerTokens = {
   userRepository: 'UserRepository',
   userOAuthProvidersRepository: 'UserOAuthProvidersRepository',
   playgroundRepository: 'PlaygroundRepository',
+  fileRepository: 'FileRepository',
+  executionRepository: 'ExecutionRepository',
   cacheRepository: 'CacheRepository',
 
   // Use Cases - Auth
@@ -28,12 +30,23 @@ export const ContainerTokens = {
   getPlaygroundUseCase: 'GetPlaygroundUseCase',
   updatePlaygroundUseCase: 'UpdatePlaygroundUseCase',
   deletePlaygroundUseCase: 'DeletePlaygroundUseCase',
+  listPlaygroundsUseCase: 'ListPlaygroundsUseCase',
+
+  // Use Cases - File
+  createFileUseCase: 'CreateFileUseCase',
+  updateFileUseCase: 'UpdateFileUseCase',
+  deleteFileUseCase: 'DeleteFileUseCase',
+
+  // Use Cases - Execution
+  executeCodeUseCase: 'ExecuteCodeUseCase',
 
   // Controllers
   authController: 'AuthController',
   oauthController: 'OAuthController',
   userController: 'UserController',
   playgroundController: 'PlaygroundController',
+  fileController: 'FileController',
+  executionController: 'ExecutionController',
 
   // Servies
   googleOAuthService: 'GoogleOAuthService',

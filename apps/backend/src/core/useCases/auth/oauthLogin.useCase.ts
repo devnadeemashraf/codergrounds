@@ -1,7 +1,7 @@
 import { PoolClient } from 'pg';
 import { inject, injectable } from 'tsyringe';
 
-import { User, UserOAuthProfile, UserOAuthProviders } from '@codergrounds/shared';
+import { User, UserOAuthProfile, UserProvider } from '@codergrounds/shared';
 
 import { OAuthFactoryInterface } from '@/core/interfaces/factories';
 import { UserRepositoryInterface } from '@/core/interfaces/repositories';
@@ -27,7 +27,7 @@ export class OAuthLoginUseCase {
   ) {}
 
   @ErrorTraced('Failed to login user via oauth')
-  async execute(provider: UserOAuthProviders, code: string, state: string) {
+  async execute(provider: UserProvider, code: string, state: string) {
     return withTransaction(async (client: PoolClient) => {
       const isValidState = await validateOAuthState(state);
       if (!isValidState) {

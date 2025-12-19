@@ -1,14 +1,13 @@
-import { BaseEntity } from './base';
+import { UserProvider } from '../enums';
 
-export type UserOAuthProviders = 'github' | 'google';
-export type UserAuthProviders = 'email' | UserOAuthProviders;
+import { BaseEntity } from './base';
 
 export interface User extends BaseEntity {
   email: string;
   username: string;
   password_hash: string | null;
   avatar_url: string | null;
-  provider: UserAuthProviders;
+  provider: UserProvider;
   token_version: number;
 }
 
@@ -17,7 +16,7 @@ export interface UserOAuthProfile {
   email: string | null;
   username: string | null;
   avatarUrl: string | null;
-  provider: UserOAuthProviders;
+  provider: UserProvider;
 }
 
 // Seed Data Type (what you INSEERT, not what you SELECT)

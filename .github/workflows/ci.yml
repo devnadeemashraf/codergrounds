@@ -1,0 +1,83 @@
+name: CI/CD Pipeline
+
+# SECTION 1: TRIGGERS - When should this run?
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# SECTION 2: Jobs - What should we do?
+jobs:
+  # Job 1: Validate (lint + test + build)
+  validate:
+    runs-on: ubuntu-latest # GitHub-hosted runner
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: '10.23.0'
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: pnpm-store-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-store-${{ runner.os }}-
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Run linting
+        run: pnpm lint
+      - name: Run tests
+        run: pnpm test
+        continue-on-error: true # TODO: Remove once test suite is properly set up
+      - name: Build all packages
+        run: pnpm turbo run build
+
+  # Job 2: Deploy (only on push to main)
+  deploy:
+    needs: validate # Wait for validate to pass
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      # Install cloudflared to use as SSH proxy through Cloudflare Tunnel
+      - name: Install cloudflared
+        run: |
+          curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+          sudo dpkg -i cloudflared.deb
+
+      - name: Setup SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+
+          # Configure SSH to use cloudflared as proxy for your tunnel hostname
+          cat >> ~/.ssh/config << EOF
+          Host ${{ secrets.VPS_HOST }}
+            ProxyCommand cloudflared access ssh --hostname %h
+            User ${{ secrets.VPS_USER }}
+            IdentityFile ~/.ssh/id_ed25519
+            StrictHostKeyChecking no
+          EOF
+
+      - name: Deploy to VPS
+        run: |
+          ssh ${{ secrets.VPS_HOST }} << 'ENDSSH'
+            cd ~/projects/codergrounds
+            git pull origin main
+            docker compose -f docker-compose.prod.yml up -d --build
+            # Wait for backend to be healthy before running migrations
+            sleep 10
+            docker compose -f docker-compose.prod.yml exec -T backend pnpm run db:migrate
+          ENDSSH

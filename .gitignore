@@ -11,6 +11,8 @@ coverage/
 # Environment variables
 .env
 .env.*.local
+.env.production
+!.env.*.example
 
 # Logs
 npm-debug.log*

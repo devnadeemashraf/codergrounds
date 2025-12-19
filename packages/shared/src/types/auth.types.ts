@@ -1,11 +1,4 @@
-import { z } from 'zod';
-
-import { UserOAuthProviders } from './entities';
-
-import { loginSchema, registerSchema } from '@/schemas/auth.schema';
-
-export type RegisterUserInput = z.infer<typeof registerSchema>;
-export type LoginUserInput = z.infer<typeof loginSchema>;
+import { UserProvider } from './enums';
 
 export interface OAuthTokenResponse {
   accessToken: string;
@@ -14,7 +7,7 @@ export interface OAuthTokenResponse {
 }
 
 export interface OAuthStateData {
-  provider: UserOAuthProviders;
+  provider: UserProvider;
   redirectAfterLogin: string;
   createdAt: string;
 }

@@ -5,7 +5,7 @@ export const validateOrThrow = <T>(schema: z.ZodType<T>, data: unknown): T => {
 
   if (!validationResult.success) {
     // Format this errot to be clean
-    const formattedError = z.treeifyError(validationResult.error);
+    const formattedError = validationResult.error.format();
     throw new Error(`Validation Error: ${JSON.stringify(formattedError)}`);
   }
 

@@ -1,6 +1,6 @@
 import crypto from 'node:crypto';
 
-import { OAuthStateData, UserOAuthProviders } from '@codergrounds/shared';
+import { OAuthStateData, UserProvider } from '@codergrounds/shared';
 
 import { RedisRepository } from '@/infrastructure/cache/repositories/redis.repository';
 import { withErrorTraced } from '@/shared/hofs';
@@ -9,7 +9,7 @@ import { CacheKeys } from '@/shared/utils/cache.utils';
 const redisRepo = new RedisRepository();
 
 export const generateOAuthState = withErrorTraced(
-  async (provider: UserOAuthProviders, redirectAfterLogin: string = '/'): Promise<string> => {
+  async (provider: UserProvider, redirectAfterLogin: string = '/'): Promise<string> => {
     const bytes = crypto.randomBytes(64);
     const stateEncoded = bytes.toString('base64url');
 
