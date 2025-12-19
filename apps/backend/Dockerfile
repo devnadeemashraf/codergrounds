@@ -56,4 +56,5 @@ USER expressjs
 EXPOSE 4000
 
 # Start from the backend dist
-CMD ["node", "apps/backend/dist/server.js"]
+# Note: TypeScript outputs to dist/src/ because rootDir is "." and source is in src/
+CMD ["node", "apps/backend/dist/src/server.js"]
