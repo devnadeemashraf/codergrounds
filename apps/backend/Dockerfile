@@ -17,6 +17,7 @@ RUN corepack enable && corepack prepare pnpm@10.23.0 --activate
 # 1. Copy pruned lockfile and package.jsons
 COPY --from=pruner /app/out/json/ .
 COPY --from=pruner /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=pruner /app/pnpm-workspace.yaml ./pnpm-workspace.yaml
 
 # 2. Install dependencies
 RUN pnpm install --frozen-lockfile
